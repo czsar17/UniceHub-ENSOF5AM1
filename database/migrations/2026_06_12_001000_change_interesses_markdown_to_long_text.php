@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasColumn('users', 'interesses_markdown')) {
+        // modify so existe no mysql, no sqlite o text ja nao tem limite
+        if ($this->ehMysql() && Schema::hasColumn('users', 'interesses_markdown')) {
             DB::statement('ALTER TABLE users MODIFY interesses_markdown LONGTEXT NULL');
         }
     }
@@ -21,8 +22,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (Schema::hasColumn('users', 'interesses_markdown')) {
+        if ($this->ehMysql() && Schema::hasColumn('users', 'interesses_markdown')) {
             DB::statement('ALTER TABLE users MODIFY interesses_markdown TEXT NULL');
         }
+    }
+
+    private function ehMysql(): bool
+    {
+        return in_array(DB::getDriverName(), ['mysql', 'mariadb']);
     }
 };

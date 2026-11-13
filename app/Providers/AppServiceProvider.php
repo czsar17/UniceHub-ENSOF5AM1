@@ -22,7 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('auth.*', function ($view) {
+        // manda o tema pra todas as telas do sistema
+        $telas = ['auth.*', 'partials.*', 'projetos.*', 'home', 'busca', 'perfil', 'conexoes', 'config'];
+
+        View::composer($telas, function ($view) {
             $defaultTheme = [
                 'primary_color' => '#2D6A63',
                 'secondary_color' => '#FF7A1A',
@@ -48,13 +51,17 @@ class AppServiceProvider extends ServiceProvider
                 'auth_background_path' => 'images/themes/image-78.png',
             ];
 
-            $theme = $defaultTheme;
+            // once() faz a consulta no banco so uma vez por pagina, mesmo com os partials
+            $theme = once(function () use ($defaultTheme) {
+                if (!Schema::hasTable('system_settings')) {
+                    return $defaultTheme;
+                }
 
-            if (Schema::hasTable('system_settings')) {
                 $value = DB::table('system_settings')->where('key', 'theme')->value('value');
                 $decoded = is_string($value) ? json_decode($value, true) : [];
-                $theme = array_merge($defaultTheme, is_array($decoded) ? $decoded : []);
-            }
+
+                return array_merge($defaultTheme, is_array($decoded) ? $decoded : []);
+            });
 
             $view->with('systemTheme', $theme);
         });
