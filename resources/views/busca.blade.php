@@ -13,53 +13,10 @@
 @php($user = Auth::user())
 
 <body>
-    <header class="header">
-        <div class="header-left">
-            <i class="fa-solid fa-bars menu-icon"></i>
-            <img src="{{ asset($systemTheme['logo_path'] ?? 'images/LOGOUNICEHUB-removebg-preview.png') }}" class="header-logo">
-        </div>
-
-        <form class="search-box" action="{{ route('buscar') }}" method="GET">
-            <input type="text" name="q" value="{{ $termo }}" placeholder="Pesquisar pessoas e projetos...">
-            <button type="submit" aria-label="Pesquisar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </form>
-
-        <div class="header-icons">
-            <i class="fa-regular fa-bell notification"></i>
-            <div class="header-profile">
-                <img src="{{ asset($user->foto) }}" class="profile-pic">
-            </div>
-        </div>
-    </header>
+    @include('partials.header')
 
     <div class="main-container">
-        <aside class="sidebar">
-            <div class="sidebar-content">
-                <ul>
-                    <li class="{{ request()->routeIs('home') ? 'active' : '' }}"><a href="{{ route('home') }}"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
-                    <li class="{{ request()->routeIs('perfil') ? 'active' : '' }}"><a href="{{ route('perfil') }}"><i class="fa-regular fa-user"></i><span>Perfil</span></a></li>
-                    <li class="{{ request()->routeIs('conexoes') ? 'active' : '' }}"><a href="{{ route('conexoes') }}"><i class="fa-solid fa-user-group"></i><span>Conexões</span></a></li>
-                    <li class="{{ request()->routeIs('projetos*') ? 'active' : '' }}"><a href="{{ route('projetos') }}"><i class="fa-regular fa-folder"></i><span>Projetos</span></a></li>
-                    <li class="{{ request()->routeIs('config') ? 'active' : '' }}"><a href="{{ route('config') }}"><i class="fa-solid fa-gear"></i><span>Configurações</span></a></li>
-                </ul>
-            </div>
-
-            <div class="sidebar-bottom">
-                <div class="sidebar-profile">
-                    <img src="{{ asset($user->foto) }}" class="profile-pic">
-                    <div>
-                        <h4>{{ $user->name }}</h4>
-                        @if($user->curso)<span>{{ $user->curso }}</span>@endif
-                    </div>
-                </div>
-                <form method="POST" action="/logout">
-                    @csrf
-                    <button class="logout" type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i>Sair</button>
-                </form>
-            </div>
-        </aside>
+        @include('partials.sidebar')
 
         <main class="profile-content search-page-content">
             <section class="profile-header search-page-header">
